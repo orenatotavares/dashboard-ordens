@@ -153,10 +153,10 @@ if not df.empty:
         styled_df = (
             df.style
             .format({
-                'Margem': '฿{:,.0f}'.format,
-                'Preço de entrada': '฿{:,.1f}'.format,
-                'Taxa': '฿{:,.0f}'.format,
-                'Lucro': '฿{:,.0f}'.format,
+                'Margem': '฿ {:,.0f}'.format,
+                'Preço de entrada': '$ {:,.1f}'.format,
+                'Taxa': '฿ {:,.0f}'.format,
+                'Lucro': '฿ {:,.0f}'.format,
                 'ROI': '{:.2f}%'.format
             })
             .set_properties(**{
