@@ -138,7 +138,7 @@ if not df.empty:
         x='Mes',
         y='Lucro_int',
         text='Lucro_int',
-        title='Lucro mensal com base na data de Saída',
+        title='Lucro mensal',
         labels={'Lucro_int': 'Lucro (฿)', 'Mes': 'Mês'},
         color_discrete_sequence=['cornflowerblue']
     )
