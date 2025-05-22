@@ -24,7 +24,6 @@ if senha_digitada != senha_correta:
     st.warning("Acesso restrito. Digite a senha correta.")
     st.stop()
 
-
 # Chaves da API
 api_key = os.getenv("API_KEY")
 api_secret = os.getenv("API_SECRET")
@@ -63,21 +62,17 @@ def get_closed_positions():
         st.error(f"Erro na API: {response.status_code}")
         return pd.DataFrame()
 
-if 'atualizar' not in st.session_state:
-    st.session_state.atualizar = False
-
+# Botão para atualizar dados
 if st.button("🔄 Atualizar dados"):
-    st.session_state.atualizar = True
+    st.session_state.df = get_closed_positions()
 
-if st.session_state.atualizar:
-    df = get_closed_positions()
-    st.session_state.atualizar = False
-else:
-    @st.cache_data
-    def load_data():
-        return get_closed_positions()
-    df = load_data()
+# Carrega do estado ou da API caso ainda não tenha
+if "df" not in st.session_state:
+    st.session_state.df = get_closed_positions()
 
+df = st.session_state.df
+
+# Processamento e visualização
 if not df.empty:
     df['Entrada'] = pd.to_datetime(df['market_filled_ts'], unit='ms').dt.strftime('%d/%m/%Y')
     df['Saida'] = pd.to_datetime(df['closed_ts'], unit='ms').dt.strftime('%d/%m/%Y')
