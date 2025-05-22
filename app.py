@@ -10,21 +10,17 @@ import requests
 from dotenv import load_dotenv
 import os
 
-# Página configurada para modo wide
 st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
 st.title("📊 Dashboard")
 
-# Carregar variáveis do .env
 load_dotenv()
 
-# Proteção com senha
 senha_correta = os.getenv("SENHA_DASHBOARD")
 senha_digitada = st.text_input("Digite a senha para acessar o dashboard:", type="password")
 if senha_digitada != senha_correta:
     st.warning("Acesso restrito. Digite a senha correta.")
     st.stop()
 
-# Chaves da API
 api_key = os.getenv("API_KEY")
 api_secret = os.getenv("API_SECRET")
 passphrase = os.getenv("PASSPHRASE")
@@ -62,17 +58,14 @@ def get_closed_positions():
         st.error(f"Erro na API: {response.status_code}")
         return pd.DataFrame()
 
-# Botão para atualizar dados
 if st.button("🔄 Atualizar dados"):
     st.session_state.df = get_closed_positions()
 
-# Carrega do estado ou da API caso ainda não tenha
 if "df" not in st.session_state:
     st.session_state.df = get_closed_positions()
 
 df = st.session_state.df
 
-# Processamento e visualização
 if not df.empty:
     if 'market_filled_ts' in df.columns and 'closed_ts' in df.columns:
         df = df[df['market_filled_ts'].notna() & df['closed_ts'].notna()]
@@ -81,7 +74,7 @@ if not df.empty:
     else:
         st.error("Colunas de data não encontradas no DataFrame.")
         st.stop()
-    
+
     df['Taxa'] = df['opening_fee'] + df['closing_fee'] + df['sum_carry_fees']
     df['Lucro'] = df['pl'] - df['Taxa']
     df['ROI'] = (df['Lucro'] / df['margin']) * 100
@@ -89,7 +82,6 @@ if not df.empty:
     df = df.reset_index(drop=True)
     df.index = df.index + 1
     df.index.name = "Nº"
-
 
     total_investido = df['margin'].sum()
     lucro_total = df['Lucro'].sum()
@@ -147,23 +139,53 @@ if not df.empty:
     st.plotly_chart(fig1, use_container_width=True)
 
     st.subheader("📋 Ordens Fechadas")
-    
-    # Criar novo DataFrame com índice a partir de 1
+
+    # 🔽 Filtro por data
+    df_filtrado = df.copy()
+    df_filtrado['Saida'] = pd.to_datetime(df_filtrado['Saida'], format='%d/%m/%Y', errors='coerce')
+    df_filtrado = df_filtrado.dropna(subset=['Saida'])
+
+    min_date = df_filtrado['Saida'].min().date()
+    max_date = df_filtrado['Saida'].max().date()
+
+    start_date, end_date = st.date_input(
+        "Filtrar por data de saída:",
+        value=(min_date, max_date),
+        min_value=min_date,
+        max_value=max_date
+    )
+
+    df_filtrado = df_filtrado[
+        (df_filtrado['Saida'].dt.date >= start_date) & 
+        (df_filtrado['Saida'].dt.date <= end_date)
+    ]
+
+    df_formatado = df_filtrado[[
+        'Entrada', 'margin', 'price', 'Saida', 'Taxa', 'Lucro', 'ROI'
+    ]].rename(columns={
+        'margin': 'Margem',
+        'price': 'Preço de entrada'
+    })
+
+    df_formatado['Margem'] = df_formatado['Margem'].astype(int).map('฿{:,}'.format)
+    df_formatado['Preço de entrada'] = df_formatado['Preço de entrada'].map('${:,.2f}'.format)
+    df_formatado['Taxa'] = df_formatado['Taxa'].astype(int).map('฿{:,}'.format)
+    df_formatado['Lucro'] = df_formatado['Lucro'].astype(int).map('฿{:,}'.format)
+    df_formatado['ROI'] = df_formatado['ROI'].map('{:.2f}%'.format)
+    # 🔼 Fim do filtro
+
     df_formatado_com_indice = df_formatado.copy()
     df_formatado_com_indice.index = range(1, len(df_formatado) + 1)
     df_formatado_com_indice.index.name = "Nº"
-    
-    # Aplicar estilo de centralização ao DataFrame com índice
+
     styled_df = df_formatado_com_indice.style \
         .set_table_styles([
             {"selector": "th", "props": [("text-align", "center")]},
             {"selector": "td", "props": [("text-align", "center")]}
         ]) \
         .set_properties(**{"text-align": "center"})
-    
-    # Exibir tabela
-    st.write(styled_df, use_container_width=True)
 
+    st.write(styled_df, use_container_width=True)
 
 else:
     st.warning("Nenhuma ordem encontrada ou erro na API.")
