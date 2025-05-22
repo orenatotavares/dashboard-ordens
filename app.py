@@ -147,6 +147,12 @@ if not df.empty:
     st.plotly_chart(fig1, use_container_width=True)
 
     st.subheader("📋 Ordens Fechadas")
-    st.dataframe(df_formatado, use_container_width=True)
+    st.dataframe(
+    df_formatado.style.set_table_styles(
+        [{'selector': 'th', 'props': [('text-align', 'center')]}]
+    ).set_properties(**{'text-align': 'center'}),
+    use_container_width=True
+    )
+
 else:
     st.warning("Nenhuma ordem encontrada ou erro na API.")
