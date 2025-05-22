@@ -17,9 +17,9 @@ if st.button("🔄 Atualizar dados"):
 
 @st.cache_data
 def carregar_dados():
-    api_key = ''      # Ex: 'abc123'
-    api_secret = ''   # Ex: 'seu_base64=='
-    passphrase = ''   # Ex: 'minha_passphrase'
+    api_key = 'ndz4OOcqqo/k0qM82AmiJFWwmSg5tunQ+ywT/oqCgWM='  # chave pública correta
+    api_secret = '3FALcKBovy5/GiUL+mVbCvxEjbZ855ZnjeMebLSWuthBoNkjNm+/sY0D9lyPLkIgNo1x5bLPRVPs/U/2bTJT0Q=='  # secret (base64, termina com ==)
+    passphrase = 'renatoapi'
 
     if isinstance(api_secret, str):
         api_secret = api_secret.encode()
