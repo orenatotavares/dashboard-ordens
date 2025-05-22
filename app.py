@@ -97,12 +97,6 @@ if not df.empty:
     roi_total = (lucro_total / total_investido) * 100 if total_investido != 0 else 0
     num_ordens = len(df)
 
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("💰 Total Investido", f"฿ {int(total_investido):,}".replace(",", "."))
-    col2.metric("📈 Lucro Total", f"฿ {int(lucro_total):,}".replace(",", "."))
-    col3.metric("📊 ROI Total", f"{roi_total:.2f}%")
-    col4.metric("📋 Total de Ordens", num_ordens)
-
     # Métricas do dia atual
     data_hoje = pd.to_datetime("today").normalize()
     df_hoje = df.copy()
@@ -111,7 +105,11 @@ if not df.empty:
     
     lucro_dia = df_hoje['Lucro'].sum()
     
-    col5 = st.columns(1)
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("💰 Total Investido", f"฿ {int(total_investido):,}".replace(",", "."))
+    col2.metric("📈 Lucro Total", f"฿ {int(lucro_total):,}".replace(",", "."))
+    col3.metric("📊 ROI Total", f"{roi_total:.2f}%")
+    col4.metric("📋 Total de Ordens", num_ordens)
     col5.metric("📆 Lucro do Dia", f"฿ {int(lucro_dia):,}".replace(",", "."))
 
     # Preparar dados para gráfico
