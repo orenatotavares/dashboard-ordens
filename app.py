@@ -147,14 +147,16 @@ if not df.empty:
 
     st.subheader("📋 Ordens Fechadas")
 
+    
     # CSS para centralizar os títulos das colunas
     st.markdown("""
         <style>
-        .center-header .ag-header-cell-label {
-            justify-content: center;
-        }
+            .ag-header-cell-label {
+                justify-content: center !important;
+            }
         </style>
     """, unsafe_allow_html=True)
+
 
     # AGGRID: Tabela interativa com filtros
     gb = GridOptionsBuilder.from_dataframe(df_formatado)
