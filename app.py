@@ -98,10 +98,23 @@ if not df.empty:
     num_ordens = len(df)
 
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("💰 Total Investido", f"฿{int(total_investido):,}".replace(",", "."))
-    col2.metric("📈 Lucro Total", f"฿{int(lucro_total):,}".replace(",", "."))
+    col1.metric("💰 Total Investido", f"฿ {int(total_investido):,}".replace(",", "."))
+    col2.metric("📈 Lucro Total", f"฿ {int(lucro_total):,}".replace(",", "."))
     col3.metric("📊 ROI Total", f"{roi_total:.2f}%")
     col4.metric("📋 Total de Ordens", num_ordens)
+
+    # Métricas do dia atual
+    data_hoje = pd.to_datetime("today").normalize()
+    df_hoje = df.copy()
+    df_hoje['closed_ts_dt'] = pd.to_datetime(df_hoje['closed_ts'], unit='ms', errors='coerce')
+    df_hoje = df_hoje[df_hoje['closed_ts_dt'].dt.normalize() == data_hoje]
+    
+    lucro_dia = df_hoje['Lucro'].sum()
+    quantidade_dia = len(df_hoje)
+    
+    col5, col6 = st.columns(2)
+    col5.metric("📆 Lucro do Dia", f"฿ {int(lucro_dia):,}".replace(",", "."))
+    col6.metric("🕒 Ordens do Dia", quantidade_dia)
 
     # Preparar dados para gráfico
     df_dashboard = df.copy()
