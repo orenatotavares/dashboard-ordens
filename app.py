@@ -19,11 +19,11 @@ st.title("📊 Dashboard")
 load_dotenv()
 
 # Autenticação com senha
-senha_correta = os.getenv("SENHA_DASHBOARD")
-senha_digitada = st.text_input("Digite a senha para acessar o dashboard:", type="password")
-if senha_digitada != senha_correta:
-    st.warning("Acesso restrito. Digite a senha correta.")
-    st.stop()
+#senha_correta = os.getenv("SENHA_DASHBOARD")
+#senha_digitada = st.text_input("Digite a senha para acessar o dashboard:", type="password")
+#if senha_digitada != senha_correta:
+ #   st.warning("Acesso restrito. Digite a senha correta.")
+    #st.stop()
 
 # Chaves da API
 api_key = os.getenv("API_KEY")
