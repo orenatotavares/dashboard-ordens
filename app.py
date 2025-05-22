@@ -108,7 +108,7 @@ if not df.empty:
     col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("💰 Total Investido", f"฿ {int(total_investido):,}".replace(",", "."))
     col2.metric("📈 Lucro Total", f"฿ {int(lucro_total):,}".replace(",", "."))
-    col3.metric("📊 ROI Total", f"{roi_total:.2f}%")
+    col3.metric("📊 ROI Total", f"{roi_total:.2f} %")
     col4.metric("📋 Total de Ordens", f" T {num_ordens} v")
     col5.metric("📆 Lucro do Dia", f"฿ {int(lucro_dia):,}".replace(",", "."))
 
