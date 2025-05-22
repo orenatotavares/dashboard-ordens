@@ -149,14 +149,15 @@ if not df.empty:
     st.subheader("📋 Ordens Fechadas")
     st.write(
         df_formatado.style
-            .set_table_styles([{
-                'selector': 'th',
-                'props': [('text-align', 'center')]
-            }])
-            .set_properties(**{'text-align': 'center'})
-            .hide(axis="index"),  # opcional: oculta o índice
+            .set_table_styles([
+                {"selector": "th", "props": [("text-align", "center")]},  # cabeçalho
+                {"selector": "td", "props": [("text-align", "center")]}   # células
+            ])
+            .set_properties(**{"text-align": "center"})
+            .hide(axis="index"),  # opcional: remove índice
         use_container_width=True
     )
+
 
 
 else:
