@@ -109,11 +109,7 @@ if not df.empty:
     col1.metric("💰 Total Investido", f"฿ {int(total_investido):,}".replace(",", "."))
     col2.metric("📈 Lucro Total", f"฿ {int(lucro_total):,}".replace(",", "."))
     col3.metric("📊 ROI Total", f"{roi_total:.2f} %")
-    #col4.metric("📋 Total de Ordens", f"&nbsp;&nbsp;&nbsp;{num_ordens}")
-    col4.markdown(f"""
-        <div style="font-size:20px;">📋 <strong>Total de Ordens</strong></div>
-        <div style="font-size:32px; margin-top: -10px;">{num_ordens}</div>
-    """, unsafe_allow_html=True)
+    col4.metric("📋 Total de Ordens", num_ordens)
     col5.metric("📆 Lucro do Dia", f"฿ {int(lucro_dia):,}".replace(",", "."))
 
     # Preparar dados para gráfico
