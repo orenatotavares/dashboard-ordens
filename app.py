@@ -12,16 +12,16 @@ import os
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode
 
 
-#st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
-#st.title("📊 Dashboard")
+st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
+st.title("📊 Dashboard")
 
 # Carrega variáveis do .env
-#load_dotenv()
+load_dotenv()
 
 # Autenticação com senha
-#senha_correta = os.getenv("SENHA_DASHBOARD")
-#senha_digitada = st.text_input("Digite a senha para acessar o dashboard:", type="password")
-#if senha_digitada != senha_correta:
+senha_correta = os.getenv("SENHA_DASHBOARD")
+senha_digitada = st.text_input("Digite a senha para acessar o dashboard:", type="password")
+if senha_digitada != senha_correta:
     st.warning("Acesso restrito. Digite a senha correta.")
     st.stop()
 
