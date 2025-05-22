@@ -165,8 +165,8 @@ if not df.empty:
     gb.configure_default_column(
         editable=False,
         groupable=False,
-        filter=True,
-        resizable=True,
+        filter=False,
+        resizable=False,
         sortable=True,
         wrapText=True,
         autoHeight=True,
