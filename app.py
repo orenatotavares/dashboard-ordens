@@ -148,10 +148,10 @@ if not df.empty:
 
     st.subheader("📋 Ordens Fechadas")
     st.dataframe(
-    df_formatado.style.set_table_styles(
-        [{'selector': 'th', 'props': [('text-align', 'center')]}]
-    ).set_properties(**{'text-align': 'center'}),
-    use_container_width=True
+        df_formatado.style.set_table_styles(
+            [{'selector': 'th', 'props': [('text-align', 'center')]}]
+        ).set_properties(**{'text-align': 'center'}),
+        use_container_width=True
     )
 
 else:
