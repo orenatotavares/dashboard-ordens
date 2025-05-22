@@ -10,6 +10,10 @@ import requests
 from dotenv import load_dotenv
 import os
 
+# Página configurada para modo wide
+st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
+st.title("📊 Dashboard")
+
 # Carregar variáveis do .env
 load_dotenv()
 
@@ -20,9 +24,6 @@ if senha_digitada != senha_correta:
     st.warning("Acesso restrito. Digite a senha correta.")
     st.stop()
 
-# Página configurada para modo wide
-st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
-st.title("📊 Dashboard")
 
 # Chaves da API
 api_key = os.getenv("API_KEY")
