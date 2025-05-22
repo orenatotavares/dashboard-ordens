@@ -1,0 +1,15 @@
+# Ignorar o arquivo com as chaves secretas
+.env
+
+# Ignorar arquivos gerados automaticamente
+__pycache__/
+*.py[cod]
+*.log
+
+# Ignorar arquivos de backup do editor
+*.swp
+*.swo
+
+# Ignorar arquivos do sistema operacional
+.DS_Store
+Thumbs.db
