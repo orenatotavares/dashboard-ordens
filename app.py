@@ -145,51 +145,34 @@ if not df.empty:
     fig1.update_layout(yaxis_title='Lucro (฿)', xaxis_title='Mês', bargap=0.3)
     st.plotly_chart(fig1, use_container_width=True)
 
+
     st.subheader("📋 Ordens Fechadas")
 
-    
-    # CSS para centralizar os títulos das colunas
-    st.markdown("""
-        <style>
-            .ag-header-cell-label {
-                justify-content: center !important;
-            }
-        </style>
-    """, unsafe_allow_html=True)
+    # Formatação de valores e centralização com Styler
+    def formatar_tabela(df):
+        styled_df = (
+            df.style
+            .format({
+                'Margem': '฿{:,.0f}'.format,
+                'Preço de entrada': '฿{:,.1f}'.format,
+                'Taxa': '฿{:,.0f}'.format,
+                'Lucro': '฿{:,.0f}'.format,
+                'ROI': '{:.2f}%'.format
+            })
+            .set_properties(**{
+                'text-align': 'center',
+                'vertical-align': 'middle'
+            })
+            .set_table_styles([
+                {'selector': 'th', 'props': [('text-align', 'center')]},
+                {'selector': 'td', 'props': [('text-align', 'center')]}
+            ])
+        )
+        return styled_df
 
-
-    # AGGRID: Tabela interativa com filtros
-    gb = GridOptionsBuilder.from_dataframe(df_formatado)
-    gb.configure_pagination(paginationAutoPageSize=True)
-
-    gb.configure_default_column(
-        editable=False,
-        groupable=False,
-        filter=False,
-        resizable=False,
-        sortable=True,
-        wrapText=True,
-        autoHeight=True,
-        cellStyle={'textAlign': 'center'},
-        headerClass='center-header'
-    )
-
-    gb.configure_column("ROI", type=["numericColumn", "numberColumnFilter", "customNumericFormat"], precision=2)
-    gb.configure_column("Lucro", type=["numericColumn"], precision=0)
-    gb.configure_column("Margem", type=["numericColumn"], precision=0)
-    gb.configure_column("Taxa", type=["numericColumn"], precision=0)
-
-    grid_options = gb.build()
-
-    AgGrid(
-        df_formatado,
-        gridOptions=grid_options,
-        columns_auto_size_mode=ColumnsAutoSizeMode.FIT_ALL_COLUMNS_TO_VIEW,
-        theme="balham",
-        fit_columns_on_grid_load=True,
-        enable_enterprise_modules=False
-    )
-
+    # Exibir tabela com formatação e centralização
+    st.dataframe(formatar_tabela(df_formatado), use_container_width=True)
 
 else:
     st.warning("Nenhuma ordem encontrada ou erro na API.")
+
