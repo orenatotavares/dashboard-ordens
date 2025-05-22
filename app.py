@@ -147,14 +147,36 @@ if not df.empty:
 
     st.subheader("📋 Ordens Fechadas")
 
+    # CSS para centralizar os títulos das colunas
+    st.markdown("""
+        <style>
+        .center-header .ag-header-cell-label {
+            justify-content: center;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     # AGGRID: Tabela interativa com filtros
     gb = GridOptionsBuilder.from_dataframe(df_formatado)
     gb.configure_pagination(paginationAutoPageSize=True)
-    gb.configure_default_column(editable=False, groupable=False, filter=True, resizable=True, sortable=True, wrapText=True, autoHeight=True)
+
+    gb.configure_default_column(
+        editable=False,
+        groupable=False,
+        filter=True,
+        resizable=True,
+        sortable=True,
+        wrapText=True,
+        autoHeight=True,
+        cellStyle={'textAlign': 'center'},
+        headerClass='center-header'
+    )
+
     gb.configure_column("ROI", type=["numericColumn", "numberColumnFilter", "customNumericFormat"], precision=2)
     gb.configure_column("Lucro", type=["numericColumn"], precision=0)
     gb.configure_column("Margem", type=["numericColumn"], precision=0)
     gb.configure_column("Taxa", type=["numericColumn"], precision=0)
+
     grid_options = gb.build()
 
     AgGrid(
@@ -165,6 +187,7 @@ if not df.empty:
         fit_columns_on_grid_load=True,
         enable_enterprise_modules=False
     )
+
 
 else:
     st.warning("Nenhuma ordem encontrada ou erro na API.")
