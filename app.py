@@ -158,37 +158,6 @@ if not df.empty:
     fig1.update_layout(yaxis_title='Lucro (฿)', xaxis_title='Mês', bargap=0.3)
     st.plotly_chart(fig1, use_container_width=True)
 
-    # Dropdown de seleção do mês para visualizar o gráfico diário
-    meses_disponiveis = lucro_mensal['Mes'].tolist()
-    mes_selecionado = st.selectbox("📅 Selecione um mês para ver o gráfico diário:", meses_disponiveis)
-
-    # Filtra os dados para o mês selecionado
-    if mes_selecionado:
-        mes_dt_selecionado = lucro_mensal[lucro_mensal['Mes'] == mes_selecionado]['Mes_dt'].iloc[0]
-        df_mes = df_dashboard[df_dashboard['Mes_dt'] == mes_dt_selecionado]
-
-        # Agrupa por dia
-        df_mes['Dia'] = df_mes['Saida'].dt.strftime('%d/%m/%Y')
-        lucro_diario = (
-            df_mes.groupby('Dia')['Lucro_int']
-            .sum()
-            .reset_index()
-            .sort_values('Dia')
-        )
-
-        # Gráfico de barras diárias
-        fig2 = px.bar(
-            lucro_diario,
-            x='Dia',
-            y='Lucro_int',
-            text='Lucro_int',
-            title=f"Lucro diário - {mes_selecionado}",
-            labels={'Lucro_int': 'Lucro (฿)', 'Dia': 'Dia'},
-            color_discrete_sequence=['mediumseagreen']
-        )
-        fig2.update_traces(texttemplate='฿%{text:,}', textposition='outside')
-        fig2.update_layout(yaxis_title='Lucro (฿)', xaxis_title='Dia', bargap=0.3)
-        st.plotly_chart(fig2, use_container_width=True)
 
     # Tabela de ordens
     st.subheader("📋 Ordens Fechadas")
