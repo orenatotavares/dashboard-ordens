@@ -12,10 +12,10 @@ import requests
 st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
 st.title("📊 Dashboard de Ordens Fechadas")
 
-# 🔐 Substitua pelas suas credenciais reais
-api_key = 'SUA_API_KEY'
-api_secret = 'SUA_SECRET'
-passphrase = 'SUA_PASSPHRASE'
+# 🔐 Credenciais
+api_key = 'ndz4OOcqqo/k0qM82AmiJFWwmSg5tunQ+ywT/oqCgWM='
+api_secret = '3FALcKBovy5/GiUL+mVbCvxEjbZ855ZnjeMebLSWuthBoNkjNm+/sY0D9lyPLkIgNo1x5bLPRVPs/U/2bTJT0Q=='
+passphrase = 'renatoapi'
 
 if isinstance(api_secret, str):
     api_secret = api_secret.encode()
