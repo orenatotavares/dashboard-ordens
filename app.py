@@ -111,7 +111,7 @@ if not df.empty:
     
     lucro_dia = df_hoje['Lucro'].sum()
     
-    col5, col6 = st.columns(1)
+    col5 = st.columns(1)
     col5.metric("📆 Lucro do Dia", f"฿ {int(lucro_dia):,}".replace(",", "."))
 
     # Preparar dados para gráfico
