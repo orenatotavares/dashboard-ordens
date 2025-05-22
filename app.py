@@ -11,14 +11,13 @@ from dotenv import load_dotenv
 import os
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode
 
-# Página configurada para modo wide
 st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
 st.title("📊 Dashboard")
 
-# Carregar variáveis do .env
+# Carrega variáveis do .env
 load_dotenv()
 
-# Proteção com senha
+# Autenticação com senha
 senha_correta = os.getenv("SENHA_DASHBOARD")
 senha_digitada = st.text_input("Digite a senha para acessar o dashboard:", type="password")
 if senha_digitada != senha_correta:
@@ -63,17 +62,17 @@ def get_closed_positions():
         st.error(f"Erro na API: {response.status_code}")
         return pd.DataFrame()
 
-# Botão para atualizar dados
+# Botão de atualização manual
 if st.button("🔄 Atualizar dados"):
     st.session_state.df = get_closed_positions()
 
-# Carrega do estado ou da API caso ainda não tenha
+# Carregamento do dataframe da sessão
 if "df" not in st.session_state:
     st.session_state.df = get_closed_positions()
 
 df = st.session_state.df
 
-# Processamento e visualização
+# Processamento
 if not df.empty:
     if 'market_filled_ts' in df.columns and 'closed_ts' in df.columns:
         df = df[df['market_filled_ts'].notna() & df['closed_ts'].notna()]
@@ -82,7 +81,7 @@ if not df.empty:
     else:
         st.error("Colunas de data não encontradas no DataFrame.")
         st.stop()
-    
+
     df['Taxa'] = df['opening_fee'] + df['closing_fee'] + df['sum_carry_fees']
     df['Lucro'] = df['pl'] - df['Taxa']
     df['ROI'] = (df['Lucro'] / df['margin']) * 100
@@ -91,6 +90,7 @@ if not df.empty:
     df.index = df.index + 1
     df.index.name = "Nº"
 
+    # Métricas
     total_investido = df['margin'].sum()
     lucro_total = df['Lucro'].sum()
     roi_total = (lucro_total / total_investido) * 100 if total_investido != 0 else 0
@@ -102,28 +102,19 @@ if not df.empty:
     col3.metric("📊 ROI Total", f"{roi_total:.2f}%")
     col4.metric("📋 Total de Ordens", num_ordens)
 
-    df_formatado = df[[
-        'Entrada', 'margin', 'price', 'Saida', 'Taxa', 'Lucro', 'ROI'
-    ]].rename(columns={
-        'margin': 'Margem',
-        'price': 'Preço de entrada'
-    })
-
-    df_formatado['Margem'] = df_formatado['Margem'].astype(int)
-    df_formatado['Taxa'] = df_formatado['Taxa'].astype(int)
-    df_formatado['Lucro'] = df_formatado['Lucro'].astype(int)
-    df_formatado['ROI'] = df_formatado['ROI'].round(2)
-
+    # Preparar dados para gráfico
     df_dashboard = df.copy()
     df_dashboard['Saida'] = pd.to_datetime(df_dashboard['Saida'], format='%d/%m/%Y')
     df_dashboard['Mes_dt'] = df_dashboard['Saida'].dt.to_period('M').dt.to_timestamp()
+    df_dashboard['Dia'] = df_dashboard['Saida'].dt.strftime('%d/%m/%Y')
+    df_dashboard['Lucro_int'] = df_dashboard['Lucro'].astype(int)
+
     meses_traducao = {
         1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril', 5: 'Maio',
         6: 'Junho', 7: 'Julho', 8: 'Agosto', 9: 'Setembro',
         10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
     }
     df_dashboard['Mes'] = df_dashboard['Mes_dt'].dt.month.map(meses_traducao) + ' ' + df_dashboard['Mes_dt'].dt.year.astype(str)
-    df_dashboard['Lucro_int'] = df_dashboard['Lucro'].astype(int)
 
     lucro_mensal = (
         df_dashboard.groupby(['Mes_dt', 'Mes'])['Lucro_int']
@@ -132,6 +123,28 @@ if not df.empty:
         .sort_values('Mes_dt')
     )
 
+    # Seletor interativo para mês
+    meses_disponiveis = lucro_mensal['Mes'].tolist()
+    mes_selecionado = st.selectbox("📅 Selecione um mês para ver o gráfico diário:", meses_disponiveis)
+
+    mes_dt = lucro_mensal[lucro_mensal['Mes'] == mes_selecionado]['Mes_dt'].values[0]
+    dados_diarios = df_dashboard[df_dashboard['Mes_dt'] == pd.to_datetime(mes_dt)]
+    lucro_diario = dados_diarios.groupby('Dia')['Lucro_int'].sum().reset_index()
+
+    fig_diario = px.bar(
+        lucro_diario,
+        x='Dia',
+        y='Lucro_int',
+        text='Lucro_int',
+        title=f'Lucro diário - {mes_selecionado}',
+        labels={'Lucro_int': 'Lucro (฿)', 'Dia': 'Dia'},
+        color_discrete_sequence=['seagreen']
+    )
+    fig_diario.update_traces(texttemplate='฿%{text:,}', textposition='outside')
+    fig_diario.update_layout(yaxis_title='Lucro (฿)', xaxis_title='Dia', bargap=0.3)
+    st.plotly_chart(fig_diario, use_container_width=True)
+
+    # Gráfico mensal
     fig1 = px.bar(
         lucro_mensal,
         x='Mes',
@@ -145,10 +158,9 @@ if not df.empty:
     fig1.update_layout(yaxis_title='Lucro (฿)', xaxis_title='Mês', bargap=0.3)
     st.plotly_chart(fig1, use_container_width=True)
 
-
+    # Tabela de ordens
     st.subheader("📋 Ordens Fechadas")
 
-    # Formatação de valores e centralização com Styler
     def formatar_tabela(df):
         styled_df = (
             df.style
@@ -161,7 +173,7 @@ if not df.empty:
             })
             .set_properties(**{
                 'text-align': 'center',
-                'vertical-align': 'middle'                
+                'vertical-align': 'middle'
             })
             .set_table_styles([
                 {'selector': 'th', 'props': [('text-align', 'center')]},
@@ -170,9 +182,17 @@ if not df.empty:
         )
         return styled_df
 
-    # Exibir tabela com formatação e centralização
+    df_formatado = df[[ 'Entrada', 'margin', 'price', 'Saida', 'Taxa', 'Lucro', 'ROI' ]].rename(columns={
+        'margin': 'Margem',
+        'price': 'Preço de entrada'
+    })
+
+    df_formatado['Margem'] = df_formatado['Margem'].astype(int)
+    df_formatado['Taxa'] = df_formatado['Taxa'].astype(int)
+    df_formatado['Lucro'] = df_formatado['Lucro'].astype(int)
+    df_formatado['ROI'] = df_formatado['ROI'].round(2)
+
     st.dataframe(formatar_tabela(df_formatado), use_container_width=True)
 
 else:
     st.warning("Nenhuma ordem encontrada ou erro na API.")
-
