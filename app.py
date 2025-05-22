@@ -12,8 +12,8 @@ import os
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode
 
 
-st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
-st.title("📊 Dashboard")
+#st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
+#st.title("📊 Dashboard")
 
 # Carrega variáveis do .env
 load_dotenv()
