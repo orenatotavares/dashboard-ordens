@@ -147,16 +147,22 @@ if not df.empty:
     st.plotly_chart(fig1, use_container_width=True)
 
     st.subheader("📋 Ordens Fechadas")
-    st.write(
-        df_formatado.style
-            .set_table_styles([
-                {"selector": "th", "props": [("text-align", "center")]},  # cabeçalho
-                {"selector": "td", "props": [("text-align", "center")]}   # células
-            ])
-            .set_properties(**{"text-align": "center"})
-            .hide(axis="index"),  # opcional: remove índice
-        use_container_width=True
-    )
+    
+    # Estilo centralizado com índice a partir de 1
+    styled_df = df_formatado.style \
+        .set_table_styles([
+            {"selector": "th", "props": [("text-align", "center")]},
+            {"selector": "td", "props": [("text-align", "center")]}
+        ]) \
+        .set_properties(**{"text-align": "center"})
+    
+    # Mostrar tabela com índice a partir de 1
+    df_formatado_com_indice = df_formatado.copy()
+    df_formatado_com_indice.index = range(1, len(df_formatado) + 1)
+    df_formatado_com_indice.index.name = "Nº"
+    
+    st.write(styled_df, use_container_width=True)
+
 
 
 
