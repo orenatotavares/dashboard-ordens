@@ -160,8 +160,8 @@ if not df.empty:
                 'ROI': '{:.2f}%'.format
             })
             .set_properties(**{
-                'text-align': 'center',
-                'vertical-align': 'middle'
+                'text-align': 'center'
+                
             })
             .set_table_styles([
                 {'selector': 'th', 'props': [('text-align', 'center')]},
