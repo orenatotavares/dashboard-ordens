@@ -110,11 +110,9 @@ if not df.empty:
     df_hoje = df_hoje[df_hoje['closed_ts_dt'].dt.normalize() == data_hoje]
     
     lucro_dia = df_hoje['Lucro'].sum()
-    quantidade_dia = len(df_hoje)
     
-    col5, col6 = st.columns(2)
+    col5, col6 = st.columns(1)
     col5.metric("📆 Lucro do Dia", f"฿ {int(lucro_dia):,}".replace(",", "."))
-    col6.metric("🕒 Ordens do Dia", quantidade_dia)
 
     # Preparar dados para gráfico
     df_dashboard = df.copy()
