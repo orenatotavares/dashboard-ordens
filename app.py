@@ -86,6 +86,7 @@ if not df.empty:
     df['Lucro'] = df['pl'] - df['Taxa']
     df['ROI'] = (df['Lucro'] / df['margin']) * 100
     df = df[df['Lucro'] != 0]
+    df = df.reset_index(drop=True)
 
     total_investido = df['margin'].sum()
     lucro_total = df['Lucro'].sum()
