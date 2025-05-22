@@ -148,22 +148,21 @@ if not df.empty:
 
     st.subheader("📋 Ordens Fechadas")
     
-    # Estilo centralizado com índice a partir de 1
-    styled_df = df_formatado.style \
+    # Criar novo DataFrame com índice a partir de 1
+    df_formatado_com_indice = df_formatado.copy()
+    df_formatado_com_indice.index = range(1, len(df_formatado) + 1)
+    df_formatado_com_indice.index.name = "Nº"
+    
+    # Aplicar estilo de centralização ao DataFrame com índice
+    styled_df = df_formatado_com_indice.style \
         .set_table_styles([
             {"selector": "th", "props": [("text-align", "center")]},
             {"selector": "td", "props": [("text-align", "center")]}
         ]) \
         .set_properties(**{"text-align": "center"})
     
-    # Mostrar tabela com índice a partir de 1
-    df_formatado_com_indice = df_formatado.copy()
-    df_formatado_com_indice.index = range(1, len(df_formatado) + 1)
-    df_formatado_com_indice.index.name = "Nº"
-    
+    # Exibir tabela
     st.write(styled_df, use_container_width=True)
-
-
 
 
 else:
