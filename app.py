@@ -74,8 +74,14 @@ df = st.session_state.df
 
 # Processamento e visualização
 if not df.empty:
-    df['Entrada'] = pd.to_datetime(df['market_filled_ts'], unit='ms').dt.strftime('%d/%m/%Y')
-    df['Saida'] = pd.to_datetime(df['closed_ts'], unit='ms').dt.strftime('%d/%m/%Y')
+    if 'market_filled_ts' in df.columns and 'closed_ts' in df.columns:
+        df = df[df['market_filled_ts'].notna() & df['closed_ts'].notna()]
+        df['Entrada'] = pd.to_datetime(df['market_filled_ts'], unit='ms', errors='coerce').dt.strftime('%d/%m/%Y')
+        df['Saida'] = pd.to_datetime(df['closed_ts'], unit='ms', errors='coerce').dt.strftime('%d/%m/%Y')
+    else:
+        st.error("Colunas de data não encontradas no DataFrame.")
+        st.stop()
+    
     df['Taxa'] = df['opening_fee'] + df['closing_fee'] + df['sum_carry_fees']
     df['Lucro'] = df['pl'] - df['Taxa']
     df['ROI'] = (df['Lucro'] / df['margin']) * 100
