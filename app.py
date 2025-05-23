@@ -94,7 +94,7 @@ if not df.empty:
     df.index.name = "Nº"
 
     # Métricas
-    total_investido = df['entry_margin'].sum()
+    total_investido = df['margin'].sum()
     lucro_total = df['Lucro'].sum()
     roi_total = (lucro_total / total_investido) * 100 if total_investido != 0 else 0
     num_ordens = len(df)
