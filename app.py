@@ -87,14 +87,14 @@ if not df.empty:
 
     df['Taxa'] = df['opening_fee'] + df['closing_fee'] + df['sum_carry_fees']
     df['Lucro'] = df['pl'] - df['Taxa']
-    df['ROI'] = (df['Lucro'] / df['margin']) * 100
+    df['ROI'] = (df['Lucro'] / df['entry_margin']) * 100
     df = df[df['Lucro'] != 0]
     df = df.reset_index(drop=True)
     df.index = df.index + 1
     df.index.name = "Nº"
 
     # Métricas
-    total_investido = df['margin'].sum()
+    total_investido = df['entry_margin'].sum()
     lucro_total = df['Lucro'].sum()
     roi_total = (lucro_total / total_investido) * 100 if total_investido != 0 else 0
     num_ordens = len(df)
@@ -203,8 +203,8 @@ if not df.empty:
         )
         return styled_df
 
-    df_formatado = df[[ 'Entrada', 'margin', 'price', 'Saida', 'Taxa', 'Lucro', 'ROI' ]].rename(columns={
-        'margin': 'Margem',
+    df_formatado = df[[ 'Entrada', 'entry_margin', 'price', 'Saida', 'Taxa', 'Lucro', 'ROI' ]].rename(columns={
+        'entry_margin': 'Margem',
         'price': 'Preço de entrada'
     })
 
