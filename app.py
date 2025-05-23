@@ -100,16 +100,10 @@ if not df.empty:
     num_ordens = len(df)
 
     # Métricas do dia atual
-    # Define o fuso horário para o Brasil
     fuso_brasil = pytz.timezone('America/Sao_Paulo')
-    # Pega a data e hora atual com o fuso correto
     agora = datetime.now(fuso_brasil)
     data_hoje = agora.date()
-    #data_hoje = pd.to_datetime("today").normalize()
     df_hoje = df.copy()
-    #df_hoje['closed_ts_dt'] = pd.to_datetime(df_hoje['closed_ts'], unit='ms', errors='coerce')
-    #df_hoje = df_hoje[df_hoje['closed_ts_dt'].dt.normalize() == data_hoje]
-
     df_hoje['closed_ts_dt'] = pd.to_datetime(df_hoje['closed_ts'], unit='ms', errors='coerce').dt.tz_localize('UTC').dt.tz_convert('America/Sao_Paulo')
     df_hoje = df_hoje[df_hoje['closed_ts_dt'].dt.date == data_hoje]
     
