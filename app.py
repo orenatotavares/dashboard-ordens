@@ -10,6 +10,8 @@ import requests
 from dotenv import load_dotenv
 import os
 from st_aggrid import AgGrid, GridOptionsBuilder, ColumnsAutoSizeMode
+from datetime import datetime
+import pytz
 
 
 st.set_page_config(page_title="Dashboard de Ordens", layout="wide")
@@ -98,7 +100,12 @@ if not df.empty:
     num_ordens = len(df)
 
     # Métricas do dia atual
-    data_hoje = pd.to_datetime("today").normalize()
+    # Define o fuso horário para o Brasil
+    fuso_brasil = pytz.timezone('America/Sao_Paulo')
+    # Pega a data e hora atual com o fuso correto
+    agora = datetime.now(fuso_brasil)
+    data_hoje = agora.date()
+    #data_hoje = pd.to_datetime("today").normalize()
     df_hoje = df.copy()
     df_hoje['closed_ts_dt'] = pd.to_datetime(df_hoje['closed_ts'], unit='ms', errors='coerce')
     df_hoje = df_hoje[df_hoje['closed_ts_dt'].dt.normalize() == data_hoje]
